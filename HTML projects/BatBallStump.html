@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        .choice-button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        h1, h2 {
+            margin: 10px 0;
+        }
+        .appreciation {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation:none;
+        }
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, 100%);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="button-container">
+            <button class="choice-button" onclick="handleChoice('BAT')">BAT</button>
+            <button class="choice-button" onclick="handleChoice('BALL')">BALL</button>
+            <button class="choice-button" onclick="handleChoice('STUMP')">STUMP</button>
+            <button class="choice-button" onclick="resetGame()">RESET</button>
+        </div>
+        <h1 id="user-move"></h1>
+        <h2 id="computer-move"></h2>
+        <h2 id="result"></h2>
+        <div id="appreciation" class="appreciation"></div>
+    </div>
+    <script>
+        function generateComputerChoice(){
+            let number = Math.random() * 3;
+            if (number <= 1) {
+                return "BAT";
+            } else if (number <= 2) {
+                return "BALL";
+            } else {
+                return "STUMP";
+            }
+        }
+        
+        function updatedscore(userchoice, compchoice) {
+            let resultMessage = '';
+            let appreciationMessage = '';
+            if (userchoice === "BAT") {
+                if (compchoice === "BALL") {
+                    score.win++;
+                    resultMessage = 'You won!';
+                    appreciationMessage = 'Congratulations!';
+                } else if (compchoice === "STUMP") {
+                    score.lost++;
+                    resultMessage = 'You lost!';
+                } else {
+                    score.tie++;
+                    resultMessage = "It's a tie!";
+                }
+            } else if (userchoice === "BALL") {
+                if (compchoice === "BAT") {
+                    score.lost++;
+                    resultMessage = 'You lost!';
+                } else if (compchoice === "BALL") {
+                    score.tie++;
+                    resultMessage = "It's a tie!";
+                } else {
+                    score.win++;
+                    resultMessage = 'You won!';
+                    appreciationMessage = 'Congratulations!';
+                }
+            } else if (userchoice === "STUMP") {
+                if (compchoice === "BAT") {
+                    score.win++;
+                    resultMessage = 'You won!';
+                    appreciationMessage = 'Congratulations!';
+                } else if (compchoice === "STUMP") {
+                    score.tie++;
+                    resultMessage = "It's a tie!";
+                } else {
+                    score.lost++;
+                    resultMessage = 'You lost!';
+                }
+            }
+            localStorage.setItem('Score', JSON.stringify(score));
+            showResult(userchoice, compchoice, resultMessage, appreciationMessage);
+        }
+
+        function handleChoice(userchoice) {
+            let compchoice = generateComputerChoice();
+            updatedscore(userchoice, compchoice);
+        }
+
+        function resetGame() {
+            localStorage.clear();
+            resetScore();
+            showResult();
+        }
+
+        let scoreStr = localStorage.getItem('Score');
+        let score;
+        
+        function resetScore() {
+            score = {
+                win: 0,
+                lost: 0,
+                tie: 0
+            };
+            localStorage.setItem('Score', JSON.stringify(score));
+        }
+
+        function showResult(userMove, compMove, resultMessage, appreciationMessage) {
+            document.querySelector('#user-move').innerText = userMove ? `You have chosen ${userMove}` : " ";
+            document.querySelector('#computer-move').innerText = compMove ? `Computer has chosen ${compMove}` : " ";
+            document.querySelector('#result').innerText = `You scored: Won ${score.win}, Lost ${score.lost}, Tie ${score.tie}`;
+            
+            if (appreciationMessage) {
+                showAppreciation(appreciationMessage);
+            }
+        }
+
+        function showAppreciation(message) {
+            let appreciationElement = document.getElementById('appreciation');
+            appreciationElement.innerText = message;
+            appreciationElement.style.animation = 'none';
+            appreciationElement.offsetHeight; // Trigger reflow
+            appreciationElement.style.animation = 'floatUp 2s ease-out forwards'; // Restart animation
+        }
+
+        if (scoreStr) {
+            score = JSON.parse(scoreStr);
+        } else {
+            resetScore();
+        }
+        
+        showResult();
+    </script>   
+</body>
+</html>
