@@ -1,0 +1,44 @@
+
+h1 {
+  text-align: center;
+}
+.container {
+    background-color: #474545;
+  width: 40%;
+  height: 650px;
+  text-align: center;
+  margin-left: 460px;
+
+}
+.inner-container{
+    width: 90%;
+    display:flexbox;
+}
+input{
+    width: 100%;
+    height: 65px;
+    font-size: 60px;
+    background-color: #474545;
+    color: rgb(255, 255, 255);
+    margin: 20px;
+    font-weight: 700;
+    text-align: right;
+    border: none;
+}
+button{
+    font-size: 60px;
+    width: 100px;
+    border-radius: 10px;
+    margin: 10px;
+    background-color: rgb(25, 25, 25);
+    color: white;
+    column-gap: 10px;
+}
+.btns{
+    columns: 4;
+    margin:20px;
+}
+.op{
+    background-color: rgb(114, 185, 244);
+    color: white;
+}
